@@ -32,7 +32,14 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 
 	//gameState := helper.GameState()
 	//gameState.Map.Cell()
-	fmt.Println("I am here: ", WhereIAm(helper))
+	myPosition := WhereIAm(helper)
+	fmt.Println("I am here: ", myPosition)
+
+	aroundMe := WhatsAroundMe(myPosition.x, myPosition.y, helper.GameState().Map)
+	fmt.Print("North: ", aroundMe[mediator.North])
+	fmt.Print("East: ", aroundMe[mediator.East])
+	fmt.Print("South: ", aroundMe[mediator.South])
+	fmt.Print("West: ", aroundMe[mediator.West])
 
 	return newDirection, nil
 }
@@ -85,4 +92,32 @@ func WhereIAm(helper Helper) Position{
 		}
 	}
 	panic("I'm lost !")
+}
+
+func WhatsAroundMe(x int, y int, maps mediator.Map) map[mediator.Direction]mediator.Cell {
+	aroundme := make(map[mediator.Direction]mediator.Cell)
+
+	var err error
+
+	aroundme[mediator.North], err = maps.Cell(x, y-1)
+	if err != nil {
+		aroundme[mediator.North] = 2
+	}
+
+	aroundme[mediator.South], err = maps.Cell(x, y+1)
+	if err != nil {
+		aroundme[mediator.South] = 2
+	}
+
+	aroundme[mediator.West], err = maps.Cell(x-1,y)
+	if err != nil {
+		aroundme[mediator.West] = 2
+	}
+
+	aroundme[mediator.East], err = maps.Cell(x+1,y)
+	if err != nil {
+		aroundme[mediator.East] = 2
+	}
+
+	return aroundme
 }
