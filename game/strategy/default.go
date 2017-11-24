@@ -5,7 +5,16 @@ import (
 	"mktd5/mktd-island/client/mediator"
 	"math/rand"
 	"fmt"
+	"math"
 )
+
+var visitedAreas = [16][16]int{}
+var directions = []mediator.Direction{
+	mediator.North,
+	mediator.East,
+	mediator.South,
+	mediator.West,
+}
 
 type DefaultMoveStrategy struct {
 	Logger log.LoggerInterface `inject:""`
@@ -28,6 +37,8 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 	var actualPos Position = whereIAm(helper)
 	fmt.Printf("Actual position %v", actualPos)
 
+	visitedAreas[actualPos.Y][actualPos.X]++
+
 	fmt.Println("Current map")
 	printMap(helper)
 
@@ -37,7 +48,7 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 	fmt.Print("South: ", aroundMe[mediator.South])
 	fmt.Print("West: ", aroundMe[mediator.West])
 
-	dir := chooseDirection(aroundMe)
+	dir := chooseDirection(aroundMe, actualPos)
 
 	fmt.Print(actualPos.X, actualPos.Y)
 	return dir, nil
@@ -48,7 +59,7 @@ type Position struct {
 	Y  	int
 }
 
-func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell) mediator.Direction {
+func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell, actualPos Position) mediator.Direction {
 	dir := mediator.North
 	if aroundMe[mediator.North].Banana() {
 		dir = mediator.North
@@ -59,10 +70,13 @@ func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell) mediator.Dir
 	} else if aroundMe[mediator.South].Banana() {
 		dir = mediator.South
 	} else {
+		/*
 		dir = randomMove()
 		for aroundMe[dir] != 0 {
 			dir = randomMove()
 		}
+		*/
+		dir = lessVisitedArea(aroundMe, actualPos)
 	}
 
 	return dir
@@ -80,14 +94,52 @@ func whereIAm(helper Helper) Position{
 	panic("I'm lost !")
 }
 
-func randomMove() mediator.Direction{
-	directions := []mediator.Direction{
-		mediator.North,
-		mediator.East,
-		mediator.South,
-		mediator.West,
+func lessVisitedArea(aroundMe map[mediator.Direction]mediator.Cell, actualPos Position) mediator.Direction{
+	emptyCells :=  make(map[mediator.Direction]mediator.Cell)
+
+	// Going though the 4 directions
+	for i := 0; i<4; i++ {
+		if aroundMe[directions[i]] == 0 {
+			emptyCells[directions[i]] = 0
+		}
 	}
 
+	betterDirection := mediator.North
+	betterDirectionWeight := math.MaxInt32
+	var newPosition Position
+
+	for k := range emptyCells{
+		newPosition.X = actualPos.X
+		newPosition.Y = actualPos.Y
+
+		if k == mediator.North{
+			newPosition.Y--
+		}else if k == mediator.East {
+			newPosition.X++
+		}else if k == mediator.South {
+			newPosition.Y++
+		}else if k == mediator.West {
+			newPosition.X--
+		}
+
+		newWeight := visitedAreas[newPosition.Y][newPosition.X]
+
+		if newWeight < betterDirectionWeight{
+			betterDirectionWeight = newWeight
+			betterDirection = k
+		}
+	}
+
+	fmt.Printf("New direction -> %v", betterDirection)
+	return betterDirection
+}
+
+/**
+ * Good old randomMove.
+ *
+ * @Deprecated: Use lessVisitedArea() instead.
+ */
+func randomMove() mediator.Direction{
 	return directions[rand.Intn(len(directions))]
 }
 
