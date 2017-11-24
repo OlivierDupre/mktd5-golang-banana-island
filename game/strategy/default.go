@@ -28,8 +28,11 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 	//rand.Seed(42) // If you fix this number, the random will always start at the same number
 	newDirection := randomMove()
 
-	//gameState := helper.GameState()
 	printMap(helper)
+
+	//gameState := helper.GameState()
+	//gameState.Map.Cell()
+
 
 	return newDirection, nil
 }
@@ -66,4 +69,20 @@ func printMap(helper Helper) {
 		}
 		fmt.Println("")
 	}
+}
+
+type Position struct {
+	x   int
+	y   int
+}
+func WhereIAm(helper Helper) Position{
+	var maps [][]mediator.Cell = helper.GameState().Map
+	for irow := range maps {
+		for icol := range maps[irow] {
+			if helper.IsMe(maps[irow][icol]) {
+				return  Position{irow, icol}
+			}
+		}
+	}
+	panic("I'm lost !")
 }
