@@ -41,6 +41,7 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 
 	fmt.Println("Current map")
 	printMap(helper)
+	printWeights()
 
 	var aroundMe map[mediator.Direction]mediator.Cell = WhatsAroundMe(actualPos,helper.GameState().Map)
 	fmt.Print("North: ", aroundMe[mediator.North])
@@ -127,6 +128,16 @@ func lessVisitedArea(aroundMe map[mediator.Direction]mediator.Cell, actualPos Po
 		if newWeight < betterDirectionWeight{
 			betterDirectionWeight = newWeight
 			betterDirection = k
+		}else if newWeight == betterDirectionWeight{
+			// If both weight are equals, randomly choose one direction -> https://huit.re/OneDirection
+			if rand.Intn(1) == 0{
+				fmt.Println("Randomly choosen new direction" )
+
+				betterDirectionWeight = newWeight
+				betterDirection = k
+			}else{
+				fmt.Println("Kept first direction" )
+			}
 		}
 	}
 
@@ -191,4 +202,14 @@ func WhatsAroundMe(pos Position, state mediator.Map) map[mediator.Direction]medi
 	}
 
 	return aroundme
+}
+
+func printWeights(){
+	for y := 0; y < 16; y++ {
+		for x := 0; x < 16; x++ {
+			fmt.Print(visitedAreas[y][x])
+		}
+
+		fmt.Println("")
+	}
 }
