@@ -28,5 +28,18 @@ func TestWhatsAroundMe(t *testing.T) {
 	if result[mediator.West] != 3 {
 		t.Errorf("West should be 3, got %v", result[mediator.West])
 	}
-}
 
+	result = strategy.WhatsAroundMe(0,0, sampleMap)
+	if result[mediator.North] != 2 {
+		t.Errorf("North should be 2, got %v", result[mediator.North])
+	}
+	if result[mediator.East] != 1 {
+		t.Errorf("East should be 1, got %v", result[mediator.East])
+	}
+	if result[mediator.South] != 3 {
+		t.Errorf("South should be 3, got %v", result[mediator.South])
+	}
+	if result[mediator.West] != 2 {
+		t.Errorf("West should be 2, got %v", result[mediator.West])
+	}
+}
