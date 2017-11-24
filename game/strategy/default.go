@@ -27,17 +27,22 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 
 	var actualPos Position = whereIAm(helper)
 
-	var aroundMe map[mediator.Direction]mediator.Cell = WhatsAroundMe(actualPos,helper.GameState())
+	var aroundMe map[mediator.Direction]mediator.Cell = WhatsAroundMe(actualPos,helper.GameState().Map)
+
+	fmt.Print("North: ", aroundMe[mediator.North])
+	fmt.Print("East: ", aroundMe[mediator.East])
+	fmt.Print("South: ", aroundMe[mediator.South])
+	fmt.Print("West: ", aroundMe[mediator.West])
 
 	dir := chooseDirection(aroundMe)
 
-	fmt.Print(actualPos.x, actualPos.y)
+	fmt.Print(actualPos.X, actualPos.Y)
 	return dir, nil
 }
 
 type Position struct {
-	x   int
-	y  	int
+	X  int
+	Y  	int
 }
 
 func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell) mediator.Direction {
@@ -103,26 +108,26 @@ func printMap(helper Helper) {
 	}
 }
 
-func WhatsAroundMe(pos Position, state mediator.State) map[mediator.Direction]mediator.Cell {
+func WhatsAroundMe(pos Position, state mediator.Map) map[mediator.Direction]mediator.Cell {
 
 	aroundme := make(map[mediator.Direction]mediator.Cell)
 	var err error
-	aroundme[mediator.North], err = state.Map.Cell(pos.x, pos.y-1)
+	aroundme[mediator.North], err = state.Cell(pos.X, pos.Y-1)
 	if err != nil {
 		aroundme[mediator.North] = 2
 	}
 
-	aroundme[mediator.South], err = state.Map.Cell(pos.x, pos.y+1)
+	aroundme[mediator.South], err = state.Cell(pos.X, pos.Y+1)
 	if err != nil {
 		aroundme[mediator.South] = 2
 	}
 
-	aroundme[mediator.West], err = state.Map.Cell(pos.x-1,pos.y)
+	aroundme[mediator.West], err = state.Cell(pos.X-1,pos.Y)
 	if err != nil {
 		aroundme[mediator.West] = 2
 	}
 
-	aroundme[mediator.East], err = state.Map.Cell(pos.x+1,pos.y)
+	aroundme[mediator.East], err = state.Cell(pos.X+1,pos.Y)
 	if err != nil {
 		aroundme[mediator.East] = 2
 	}

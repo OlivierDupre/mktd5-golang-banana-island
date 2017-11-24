@@ -7,6 +7,16 @@ import (
 	"mktd5/mktd-island/client/mediator"
 )
 
+/*
+const(
+	sampleMap := [][]mediator.Cell{
+		{0,1,0},
+		{3,0,2},
+		{0,0,0},
+	}
+)
+*/
+
 func TestWhatsAroundMe(t *testing.T) {
 	sampleMap := [][]mediator.Cell{
 		{0,1,0},
@@ -14,8 +24,9 @@ func TestWhatsAroundMe(t *testing.T) {
 		{0,0,0},
 	}
 
+	myPosition := strategy.Position{1,1}
 
-	result := strategy.WhatsAroundMe(1,1, sampleMap)
+	result := strategy.WhatsAroundMe(myPosition, sampleMap)
 	if result[mediator.North] != 1 {
 		t.Errorf("North should be 1, got %v", result[mediator.North])
 	}
@@ -38,7 +49,9 @@ func TestWhatsAroundMe1(t *testing.T) {
 		{0,0,0},
 	}
 
-	result := strategy.WhatsAroundMe(0,0, sampleMap)
+	myPosition := strategy.Position{0,0}
+
+	result := strategy.WhatsAroundMe(myPosition, sampleMap)
 	if result[mediator.North] != 2 {
 		t.Errorf("North should be 2, got %v", result[mediator.North])
 	}
@@ -60,8 +73,9 @@ func TestWhatsAroundMe2(t *testing.T) {
 		{0,0,0},
 	}
 
+	myPosition := strategy.Position{2,2}
 
-	result := strategy.WhatsAroundMe(3,3, sampleMap)
+	result := strategy.WhatsAroundMe(myPosition, sampleMap)
 	if result[mediator.North] != 2 {
 		t.Errorf("North should be 2, got %v", result[mediator.North])
 	}
