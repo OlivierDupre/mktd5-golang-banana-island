@@ -60,6 +60,9 @@ func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell) mediator.Dir
 		dir = mediator.South
 	} else {
 		dir = randomMove()
+		for aroundMe[dir] != 0 {
+			dir = randomMove()
+		}
 	}
 
 	return dir
