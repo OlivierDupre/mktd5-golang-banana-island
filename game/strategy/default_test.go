@@ -6,15 +6,12 @@ import (
 	"mktd5/mktd-island/client/game/strategy"
 	"mktd5/mktd-island/client/mediator"
 )
-
 /*
-const(
-	sampleMap := [][]mediator.Cell{
+const sampleMap := [][]mediator.Cell{
 		{0,1,0},
 		{3,0,2},
 		{0,0,0},
 	}
-)
 */
 
 func TestWhatsAroundMe(t *testing.T) {

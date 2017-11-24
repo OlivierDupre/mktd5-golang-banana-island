@@ -26,9 +26,12 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 	d.Logger.Info("let's go!", nil)
 
 	var actualPos Position = whereIAm(helper)
+	fmt.Println("Actual position %v", actualPos)
+
+	fmt.Println("Current map")
+	printMap(helper)
 
 	var aroundMe map[mediator.Direction]mediator.Cell = WhatsAroundMe(actualPos,helper.GameState().Map)
-
 	fmt.Print("North: ", aroundMe[mediator.North])
 	fmt.Print("East: ", aroundMe[mediator.East])
 	fmt.Print("South: ", aroundMe[mediator.South])
