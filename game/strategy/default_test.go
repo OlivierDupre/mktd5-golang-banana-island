@@ -6,21 +6,16 @@ import (
 	"mktd5/mktd-island/client/game/strategy"
 	"mktd5/mktd-island/client/mediator"
 )
-/*
-const sampleMap := [][]mediator.Cell{
+
+// Cannot be a Const since it's mutable
+var sampleMap = [][]mediator.Cell{
 		{0,1,0},
 		{3,0,2},
 		{0,0,0},
 	}
-*/
+
 
 func TestWhatsAroundMe(t *testing.T) {
-	sampleMap := [][]mediator.Cell{
-		{0,1,0},
-		{3,0,2},
-		{0,0,0},
-	}
-
 	myPosition := strategy.Position{1,1}
 
 	result := strategy.WhatsAroundMe(myPosition, sampleMap)
@@ -40,12 +35,6 @@ func TestWhatsAroundMe(t *testing.T) {
 }
 
 func TestWhatsAroundMe1(t *testing.T) {
-	sampleMap := [][]mediator.Cell{
-		{0,1,0},
-		{3,0,2},
-		{0,0,0},
-	}
-
 	myPosition := strategy.Position{0,0}
 
 	result := strategy.WhatsAroundMe(myPosition, sampleMap)
@@ -64,12 +53,6 @@ func TestWhatsAroundMe1(t *testing.T) {
 }
 
 func TestWhatsAroundMe2(t *testing.T) {
-	sampleMap := [][]mediator.Cell{
-		{0,1,0},
-		{3,0,2},
-		{0,0,0},
-	}
-
 	myPosition := strategy.Position{2,2}
 
 	result := strategy.WhatsAroundMe(myPosition, sampleMap)

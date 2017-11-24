@@ -26,7 +26,7 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 	d.Logger.Info("let's go!", nil)
 
 	var actualPos Position = whereIAm(helper)
-	fmt.Println("Actual position %v", actualPos)
+	fmt.Printf("Actual position %v", actualPos)
 
 	fmt.Println("Current map")
 	printMap(helper)
@@ -70,7 +70,7 @@ func whereIAm(helper Helper) Position{
 	for irow := range maps {
 		for icol := range maps[irow] {
 			if helper.IsMe(maps[irow][icol]) {
-				return  Position{irow, icol}
+				return  Position{icol, irow}
 			}
 		}
 	}
