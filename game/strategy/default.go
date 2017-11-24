@@ -32,7 +32,7 @@ func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction
 
 	//gameState := helper.GameState()
 	//gameState.Map.Cell()
-	fmt.Print("I am here: ", WhereIAm(helper))
+	fmt.Println("I am here: ", WhereIAm(helper))
 
 	return newDirection, nil
 }
