@@ -25,23 +25,48 @@ type DefaultMoveStrategy struct {
 func (d *DefaultMoveStrategy) DecideWhereToGo(helper Helper) (mediator.Direction, error) {
 	d.Logger.Info("let's go!", nil)
 
-	//rand.Seed(42) // If you fix this number, the random will always start at the same number
-	newDirection := randomMove()
+	var actualPos Position = whereIAm(helper)
 
-	printMap(helper)
+	var aroundMe map[mediator.Direction]mediator.Cell = WhatsAroundMe(actualPos,helper.GameState())
 
-	//gameState := helper.GameState()
-	//gameState.Map.Cell()
-	myPosition := WhereIAm(helper)
-	fmt.Println("I am here: ", myPosition)
+	dir := chooseDirection(aroundMe)
 
-	aroundMe := WhatsAroundMe(myPosition.x, myPosition.y, helper.GameState().Map)
-	fmt.Print("North: ", aroundMe[mediator.North])
-	fmt.Print("East: ", aroundMe[mediator.East])
-	fmt.Print("South: ", aroundMe[mediator.South])
-	fmt.Print("West: ", aroundMe[mediator.West])
+	fmt.Print(actualPos.x, actualPos.y)
+	return dir, nil
+}
 
-	return newDirection, nil
+type Position struct {
+	x   int
+	y  	int
+}
+
+func chooseDirection(aroundMe map[mediator.Direction]mediator.Cell) mediator.Direction {
+	dir := mediator.North
+	if aroundMe[mediator.North].Banana() {
+		dir = mediator.North
+	} else if aroundMe[mediator.East].Banana() {
+		dir = mediator.East
+	} else if aroundMe[mediator.West].Banana() {
+		dir = mediator.West
+	} else if aroundMe[mediator.South].Banana() {
+		dir = mediator.South
+	} else {
+		dir = randomMove()
+	}
+
+	return dir
+}
+
+func whereIAm(helper Helper) Position{
+	var maps [][]mediator.Cell = helper.GameState().Map
+	for irow := range maps {
+		for icol := range maps[irow] {
+			if helper.IsMe(maps[irow][icol]) {
+				return  Position{irow, icol}
+			}
+		}
+	}
+	panic("I'm lost !")
 }
 
 func randomMove() mediator.Direction{
@@ -78,43 +103,26 @@ func printMap(helper Helper) {
 	}
 }
 
-type Position struct {
-	x   int
-	y   int
-}
-func WhereIAm(helper Helper) Position{
-	var maps [][]mediator.Cell = helper.GameState().Map
-	for irow := range maps {
-		for icol := range maps[irow] {
-			if helper.IsMe(maps[irow][icol]) {
-				return  Position{irow, icol}
-			}
-		}
-	}
-	panic("I'm lost !")
-}
+func WhatsAroundMe(pos Position, state mediator.State) map[mediator.Direction]mediator.Cell {
 
-func WhatsAroundMe(x int, y int, maps mediator.Map) map[mediator.Direction]mediator.Cell {
 	aroundme := make(map[mediator.Direction]mediator.Cell)
-
 	var err error
-
-	aroundme[mediator.North], err = maps.Cell(x, y-1)
+	aroundme[mediator.North], err = state.Map.Cell(pos.x, pos.y-1)
 	if err != nil {
 		aroundme[mediator.North] = 2
 	}
 
-	aroundme[mediator.South], err = maps.Cell(x, y+1)
+	aroundme[mediator.South], err = state.Map.Cell(pos.x, pos.y+1)
 	if err != nil {
 		aroundme[mediator.South] = 2
 	}
 
-	aroundme[mediator.West], err = maps.Cell(x-1,y)
+	aroundme[mediator.West], err = state.Map.Cell(pos.x-1,pos.y)
 	if err != nil {
 		aroundme[mediator.West] = 2
 	}
 
-	aroundme[mediator.East], err = maps.Cell(x+1,y)
+	aroundme[mediator.East], err = state.Map.Cell(pos.x+1,pos.y)
 	if err != nil {
 		aroundme[mediator.East] = 2
 	}
